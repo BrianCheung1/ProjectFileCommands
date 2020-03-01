@@ -2,6 +2,8 @@
 #include <fstream>
 using namespace std;
 
+void deleteLine();
+
 int main(){
     string Function;    //changed from int to string to stop infinite loop
     string again;       //Keep while loop going if user replies with "yes"
@@ -13,9 +15,10 @@ int main(){
             cout << "[1] Create a file " << endl;
             cout << "[2] Display a file " << endl;
             cout << "[3] Search a file " << endl;
+            cout << "[4] Remove lines from file " << endl;
             cout << "[9] Exit " << endl;
             cin >> Function;
-        } while(Function != "1" && Function != "2" && Function != "3" && Function != "9"); //Only numbers 1,2,3,9 are allowed, other inputs result in question again
+        } while(Function != "1" && Function != "2" && Function != "3" && Function != "4" && Function != "9"); //Only numbers 1,2,3,9 are allowed, other inputs result in question again
         
 
         if(Function == "1"){
@@ -101,6 +104,10 @@ int main(){
             }
         }
 
+        if(Function == "4"){
+            deleteLine();
+        }
+
         if(Function == "9"){
             break;
         }
@@ -113,4 +120,28 @@ int main(){
     
 
     }while(again == "yes");
+}
+
+void deleteLine(){
+    string deletePhrase;
+    string line;
+
+    cout << "Which file would you like to search?" << endl;
+    string file;
+    cin >> file;
+
+    ifstream openfile(file + ".txt");
+    ofstream tempfile("tempfile.txt");
+
+    cout << "which line would you like to remove?" << endl;
+    cin >> deletePhrase;
+
+
+    while(openfile >> line){
+        if(line != deletePhrase){
+             tempfile << line << endl;
+        }
+    }
+    rename("tempfile.txt", "LinesDeleted.txt");
+    remove(file + ".txt");
 }
