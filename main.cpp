@@ -3,6 +3,8 @@
 using namespace std;
 
 void deleteLine();
+void replaceLine();
+void copyFile();
 
 int main(){
     string Function;    //changed from int to string to stop infinite loop
@@ -16,9 +18,11 @@ int main(){
             cout << "[2] Display a file " << endl;
             cout << "[3] Search a file " << endl;
             cout << "[4] Remove lines from file " << endl;
+            cout << "[5] Replace lines from file " << endl;
+            cout << "[6] copy a file " << endl;
             cout << "[9] Exit " << endl;
             cin >> Function;
-        } while(Function != "1" && Function != "2" && Function != "3" && Function != "4" && Function != "9"); //Only numbers 1,2,3,9 are allowed, other inputs result in question again
+        } while(Function != "1" && Function != "2" && Function != "3" && Function != "4" && Function != "5" && Function != "6" && Function != "9"); //Only numbers 1,2,3,9 are allowed, other inputs result in question again
         
 
         if(Function == "1"){
@@ -75,6 +79,7 @@ int main(){
                 if (openfile.is_open()){
                     cout << openfile.rdbuf(); //prints all contents of textfile
                 }
+                cout << endl;
             }
             if(openfile.fail()){
                 cout << "File does not exist" << endl;
@@ -108,6 +113,14 @@ int main(){
             deleteLine();
         }
 
+        if(Function == "5"){
+            replaceLine();
+        }
+
+        if(Function == "6"){
+            copyFile();
+        }
+
         if(Function == "9"){
             break;
         }
@@ -122,11 +135,12 @@ int main(){
     }while(again == "yes");
 }
 
+//Opens file and deletes the lines that user no longer wants
 void deleteLine(){
     string deletePhrase;
     string line;
 
-    cout << "Which file would you like to search?" << endl;
+    cout << "Which file would you like to delete lines in?" << endl;
     string file;
     cin >> file;
 
@@ -139,9 +153,67 @@ void deleteLine(){
 
     while(openfile >> line){
         if(line != deletePhrase){
-             tempfile << line << endl;
+            tempfile << line << endl;
         }
     }
     rename("tempfile.txt", "LinesDeleted.txt");
     remove((file + ".txt").c_str());
+}
+
+//replaces lines that user doesnt want anymore with "replaced"
+void replaceLine(){
+    string replacePhrase;
+    string newPhrase;
+    string line;
+
+    cout << "Which file would you like to replace lines in" << endl;
+    string file;
+    cin >> file;
+
+    ifstream openfile(file + ".txt");
+    ofstream tempfile("tempfile.txt");
+
+    cout << "Which line would you like to replace?" << endl;
+    cin >> replacePhrase;
+
+    cout << "What would you like to replace the line with?" << endl;
+    cin >> newPhrase;
+
+
+    while(openfile >> line){
+
+        if(line == replacePhrase){
+            tempfile << "REPLACED"; // if line has the user input then they are replaced
+        }
+        else{
+            tempfile << line; //if not the lines are just copied over
+        }
+        tempfile << endl;
+    }
+    rename("tempfile.txt", "LinesReplaced.txt");
+    //remove((file + ".txt").c_str());
+}
+
+void copyFile() {
+    string line;
+    string copy;
+
+    cout << "Which file would you like to copy?" << endl;
+    string file;
+    cin >> file;
+
+    ifstream openfile(file + ".txt");
+    ofstream tempfile("tempfile.txt");
+
+    if(openfile.is_open()){
+        while(getline(openfile, line)){ //while loop to read each line of the file
+        tempfile << line << endl;       //print each line into a new temp file
+        }
+    }
+
+    cout << "What would you like to name the copy?" << endl;
+    cin >> copy;
+
+    rename("tempfile.txt", (copy + ".txt").c_str()); //c_str to allow rename to work
+
 }
