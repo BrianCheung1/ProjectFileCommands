@@ -143,5 +143,5 @@ void deleteLine(){
         }
     }
     rename("tempfile.txt", "LinesDeleted.txt");
-    remove(file + ".txt");
+    remove((file + ".txt").c_str());
 }
